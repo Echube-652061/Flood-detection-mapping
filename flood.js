@@ -1,6 +1,7 @@
-
+//Flood inundation mapping using Sentinel-1 SAR data in Lower Saxony, Germany.  
+   
 //Objective : to analyze and map out the flood extent and pattern of lower Saxony between Dec 2023 and Jan 2024.
-//by taking time series data and computing the flood extent in each date. 
+//by taking time series data and computing the flood extent in each date.
 
 //Load shapefile of region of interest (roi)
 
@@ -39,7 +40,7 @@ var image27 = ee.Image(ee.List(collection_list).get(26)).clip(roi);
 var Jan_20 = ee.ImageCollection([image25, image26, image27]).mosaic();
 
 //Select the VH band from the mosaic image 
-//VH is a better polarization to detect inundation cuased by open water because the signal doesn not depolarize(low backscatter)
+//VH is a better polarization to detect inundation cuased by open water because the signal doesn not depolarize (low backscatter)
 
 Map.centerObject(roi, 7);
 Map.addLayer(Dec_15.select('VH'), {min:-25, max:-5}, 'S1 Dec. 15, 2023 VH', 0);
@@ -57,8 +58,8 @@ Map.addLayer(composite1, {min: -25, max: -5}, 'Dec15(R)/Dec27(G)/Jan08(B) VH', 0
 Map.addLayer(composite2, {min: -25, max: -5}, 'Dec27(R)/Jan08(G)/Jan20(B) VH', 0);
 
 
-//Apply a spatial speckle filter (Speckle is granular noise that inherently exists on the image and degrade the quality of the image.
-//(grainy) i.e. salt and peper texture of the image resulted from multiple scattering returns within each resolution cell)
+//Apply a spatial speckle filter (speckle is granular noise that inherently exists and degrade the quality of the image),
+//grainy i.e. salt and peper texture of the image resulted from multiple scattering returns within each resolution cell
 
 var SMOOTHING_RADIUS = 50; //As the smoothing value increase the greater the reduction of speckle but the higher reduction in spatial resolution.
 var Dec_15_filt = Dec_15.focal_mean(SMOOTHING_RADIUS, 'circle', 'meters');
@@ -74,7 +75,7 @@ Map.addLayer(Jan_08_filt, {min:-15,max:-5}, 'FilteredVH_Jan_08',0);
 Map.addLayer(Jan_20_filt, {min:-15,max:-5}, 'FilteredVH_Jan_20',0);
 
 //Create difference images for the respective dates
-//In order to substract logarithmic values (dB) it is imperaive to perform a division (subtracting from the after image before)
+//In order to substract logarithmic values (dB) it is imperaive to perform a division (subtracting from the after before image)
 //dB measure the loudness of a sound, indiacte how loud a sound is relative to some reference, representated in units of 
 //micropascals)
 
